@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template for setting up an IAM environment that requires the user to implement conditional role assumption and access control policies.
+
+Resources:
+  LimitedAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LimitedAccessRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: "sts:AssumeRole"
+            # TODO: Implement condition to require MFA for role assumption
+      Path: "/"
+      # TODO: Define inline policies or attach managed policies that enforce restrictive access based on IP whitelisting and MFA
+
+  # Placeholder for creating a managed policy that the user needs to define
+  # Uncomment and define the policy to restrict access to resources with conditions
+  # ConfidentialDataAccessPolicy:
+  #   Type: AWS::IAM::ManagedPolicy
+  #   Properties:
+  #     ManagedPolicyName: ConfidentialDataAccessPolicy
+  #     Description: User-defined policy to restrict access based on conditions.
+  #     PolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Effect: Allow/Deny
+  #           Action: "service:action"
+  #           Resource: "ARN"
+  #           Condition: 
+  #             # Implement conditions such as NotIpAddress and Bool for MFA
+
+  SecurityConsciousUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: SecurityConsciousUser
+      # TODO: Attach policies that allow assuming the LimitedAccessRole under secure conditions
+
